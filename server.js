@@ -4,7 +4,10 @@ const app = express();
 
 const fs = require('fs');
 
+const { v4: uuidv4 } = require('uuid');
+
 const path = require('path');
+const { v4 } = require('uuid');
 
 app.use(express.static('./public'));
 
@@ -32,6 +35,7 @@ app.get("/api/notes", (req, res) => {
 app.post('/api/notes', (req, res)=>{
     console.log(req.body)
     const newNote = req.body;
+    newNote.id = v4();
     const notesArray = JSON.parse(fs.readFileSync("./db/db.json"));
     notesArray.push(newNote)
     fs.writeFileSync("./db/db.json", JSON.stringify(notesArray))
@@ -40,6 +44,18 @@ app.post('/api/notes', (req, res)=>{
 })
 
 
+app.delete('/api/notes/:id', (req, res)=>{
+    console.log(req.params.id)
+    // get all the notes out of db
+    const completeArray = JSON.parse(fs.readFileSync("./db/db.json"));
+    // go through each note and compare id with request id
+    const newDatabase = completeArray.filter(note => note.id !== req.params.id)
+    // once match is found, delete from database
+    fs.writeFileSync("./db/db.json", JSON.stringify(newDatabase))
+    res.json(newDatabase);
+
+
+})
 
 
 
