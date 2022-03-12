@@ -66,8 +66,10 @@ app.all('*', (req, res)=>{
 
 
 // where there server is listening
-app.listen(3001, () => {
-    console.log('server is listening on Port 3001')
-})
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Our app is running on port ${ PORT }`);
+});
+
 
 
